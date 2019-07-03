@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
     /** checking if we are in background to check for new articles and notify*/
     //@OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onMoveToBackground() {
-        System.out.println("we are on background");
+        //System.out.println("we are on background");
         Constraints constraints = new Constraints.Builder()
                 /** do checking only if there is a network connection, no point to do it otherwise */
                 .setRequiredNetworkType(NetworkType.CONNECTED)
