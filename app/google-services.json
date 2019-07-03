@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "852298929066",
+    "firebase_url": "https://menutask.firebaseio.com",
+    "project_id": "menutask",
+    "storage_bucket": "menutask.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:852298929066:android:0c85e634da73a316",
+        "android_client_info": {
+          "package_name": "com.example.menutask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "852298929066-9mf0g8j77camcs04kuqbu2opmtcd01om.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCYrqn7GrA6ZfnUkn293CYZdBSfm8YD1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "852298929066-9mf0g8j77camcs04kuqbu2opmtcd01om.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
