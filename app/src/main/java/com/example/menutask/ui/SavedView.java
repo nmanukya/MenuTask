@@ -47,7 +47,7 @@ public class SavedView extends Fragment {
 
         db = new DatabaseHandler(context);
         recview =  rootView.findViewById(R.id.recview);
-        final List<DataProvider> dataList =populateSavedArticles(getSavedArticles());
+        populateSavedArticles(getSavedArticles());
 
         return rootView;
     }
@@ -57,7 +57,7 @@ public class SavedView extends Fragment {
         return  db.getMultipleValues(false, table, column, null, null, null, null, null, null);
 
     }
-    private List<DataProvider>  populateSavedArticles(HashMap<String, List<String>> savedArticleList) {
+    private void populateSavedArticles(HashMap<String, List<String>> savedArticleList) {
         final List<DataProvider> dataProviderList= new ArrayList<>();
         DataProvider dataProvider;
         String[] column={"title", "content", "section", "imageURL", "articleId"};
@@ -70,11 +70,11 @@ public class SavedView extends Fragment {
             List<String> articleIdList = savedArticleList.get(column[4]);
             for (int i = 0; i < titleList.size(); i++) {
                 dataProvider = new DataProvider();
-                dataProvider.setAttributes("articleTitle",titleList.get(i));
-                dataProvider.setAttributes("sectionName",sectionList.get(i));
-                dataProvider.setAttributes("textSummary",contentList.get(i));
-                dataProvider.setAttributes("thumbnail",imageURLList.get(i));
-                dataProvider.setAttributes("articleId",articleIdList.get(i));
+                dataProvider.setAttributes("articleTitle", titleList.get(i));
+                dataProvider.setAttributes("sectionName", sectionList.get(i));
+                dataProvider.setAttributes("textSummary", contentList.get(i));
+                dataProvider.setAttributes("thumbnail", imageURLList.get(i));
+                dataProvider.setAttributes("articleId", articleIdList.get(i));
                 dataProviderList.add(dataProvider);
             }
             Collections.reverse(dataProviderList);
@@ -83,16 +83,16 @@ public class SavedView extends Fragment {
             recview.setItemAnimator(new DefaultItemAnimator());
             recview.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
             recview.setAdapter(universalAdapter);
+
+            universalAdapter.setOnButtonClickedListener(new OnButtonClickListener() {
+                @Override
+                public void onButtonClicked(int position) {
+                    //remove from database
+                    removeFromSaved("saved_articles", "articleId = ?", dataProviderList.get(position).getAttributes("articleId"));
+                    universalAdapter.removeFromList(position);
+                }
+            });
         }
-        universalAdapter.setOnButtonClickedListener(new OnButtonClickListener() {
-            @Override
-            public void onButtonClicked(int position) {
-                //remove from database
-                removeFromSaved("saved_articles", "articleId = ?", dataProviderList.get(position).getAttributes("articleId"));
-                universalAdapter.removeFromList(position);
-            }
-        });
-        return dataProviderList;
     }
     public void removeFromSaved(String tableName, String where, String articleId){
         db.deleteFromTable(tableName, where, new String[] {articleId});

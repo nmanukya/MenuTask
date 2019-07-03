@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
     }
     /** checking if we are in background to check for new articles and notify*/
-    //@OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onMoveToBackground() {
         //System.out.println("we are on background");
         Constraints constraints = new Constraints.Builder()
@@ -95,17 +95,13 @@ public class MainActivity extends AppCompatActivity implements LifecycleObserver
                 .build();
 
         PeriodicWorkRequest saveRequest =
-                new PeriodicWorkRequest.Builder(NotificationWorker.class, 15, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(NotificationWorker.class, 20, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .build();
 
         WorkManager.getInstance()
                 .enqueue(saveRequest);
     }
-    @Override
-    public void onStop() {
-        super.onStop();
-        onMoveToBackground();
-    }
+
 
 }

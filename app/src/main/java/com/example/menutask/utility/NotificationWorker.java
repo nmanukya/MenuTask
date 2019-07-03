@@ -54,8 +54,8 @@ public class NotificationWorker extends Worker {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         Calendar calendar = Calendar.getInstance();
-        /* getting articles published in last 30 minutes*/
-        calendar.add(Calendar.MINUTE,-30);
+        /* getting articles published in last 20 minutes*/
+        calendar.add(Calendar.MINUTE,-20);
         String fromDate=sdf.format(calendar.getTime());
         final String checkURL="https://content.guardianapis.com/search?type=article&api-key=521507b1-6b35-4656-8c03-de57542895f0&from-date="+fromDate;
         new GetJson(checkURL, new AsyncResponse() {
