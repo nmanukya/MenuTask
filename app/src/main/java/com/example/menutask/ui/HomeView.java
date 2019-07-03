@@ -11,10 +11,18 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 
 import android.os.Handler;
@@ -33,6 +41,7 @@ import com.example.menutask.interfaces.OnButtonClickListener;
 import com.example.menutask.interfaces.OnPinButtonClickListener;
 import com.example.menutask.provider.DataProvider;
 import com.example.menutask.utility.GetJson;
+import com.example.menutask.utility.NotificationWorker;
 
 
 import org.json.JSONArray;
@@ -49,9 +58,10 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 
-public class HomeView extends Fragment  {
+public class HomeView extends Fragment  implements LifecycleObserver {
 
     private RecyclerView recview, horizontal_recview;
     @Nullable
@@ -89,7 +99,7 @@ public class HomeView extends Fragment  {
             getArticles(url);
             checkForNewArticles();
         }
-
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         return rootView;
     }
 
@@ -314,5 +324,20 @@ public class HomeView extends Fragment  {
         /** to make sure that we will see our last pinned article in the list*/
         populatePinnedArticles(getPinnedArticles());
     }
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onMoveToBackground() {
+        //System.out.println("we are on background");
+        Constraints constraints = new Constraints.Builder()
+                /** do checking only if there is a network connection, no point to do it otherwise */
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
 
+        PeriodicWorkRequest saveRequest =
+                new PeriodicWorkRequest.Builder(NotificationWorker.class, 20, TimeUnit.MINUTES)
+                        .setConstraints(constraints)
+                        .build();
+
+        WorkManager.getInstance()
+                .enqueue(saveRequest);
+    }
 }
